@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>åçè³è¨ Prototype v5 â Echoss VIP</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  background: #f4f5f9; color: #1a1a2e; font-size: 14px;
+}
+.layout { display: flex; min-height: 100vh; }
+
+/* ââ Sidebar ââ */
+.sidebar { width: 210px; flex-shrink: 0; background: #fff; border-right: 1px solid #ebebf0; }
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px; padding: 17px 20px;
+  font-weight: 700; font-size: 15px; color: #111; border-bottom: 1px solid #f0f0f5;
+}
+.logo-mark { width: 30px; height: 30px; background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.logo-mark svg { width: 15px; height: 15px; fill: #fff; }
+.nav { padding: 8px 10px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 7px; font-size: 13.5px; color: #777; cursor: pointer; transition: all 0.12s; margin-bottom: 2px; }
+.nav-item:hover { background: #f4f5f9; color: #333; }
+.nav-item.active { background: #eef2ff; color: #1677ff; font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* ââ Content ââ */
+.content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar { height: 50px; background: #fff; border-bottom: 1px solid #ebebf0; display: flex; align-items: center; justify-content: flex-end; padding: 0 28px; flex-shrink: 0; }
+.avatar-chip { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #555; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: #1677ff; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.main { flex: 1; padding: 24px 32px; overflow-y: auto; }
+.page-title { font-size: 18px; font-weight: 700; color: #111; margin-bottom: 18px; }
+
+/* ââ Tabs ââ */
+.tabs { display: flex; border-bottom: 1.5px solid #eaeaf0; margin-bottom: 28px; }
+.tab { padding: 9px 18px; font-size: 13.5px; color: #999; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1.5px; transition: all 0.12s; }
+.tab:hover { color: #1677ff; }
+.tab.active { color: #1677ff; border-bottom-color: #1677ff; font-weight: 600; }
+
+/* ââ Section ââ */
+.section { margin-bottom: 32px; }
+.section-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #1677ff; background: #e6f0ff; border-radius: 4px; padding: 2px 8px; display: inline-block; margin-bottom: 6px; }
+.section-title { font-size: 15px; font-weight: 700; color: #111; }
+
+/* ââ Block A period row ââ */
+.period-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.period-card { background: #fff; border: 1.5px solid #e8e8f0; border-radius: 10px; padding: 14px 18px; }
+.period-card.pa { border-top: 3px solid #aab8c2; }
+.period-card.pb { border-top: 3px solid #1677ff; }
+.period-lbl { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+.pa .period-lbl { color: #999; }
+.pb .period-lbl { color: #1677ff; }
+.date-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.date-in { border: 1.5px solid #e0e0ea; border-radius: 7px; padding: 5px 10px; font-size: 13px; color: #333; font-family: inherit; background: #fafafa; outline: none; cursor: pointer; transition: border-color 0.15s; }
+.date-in:focus { border-color: #1677ff; background: #fff; }
+.date-sep { color: #bbb; font-size: 13px; }
+
+/* ââ KPI cards ââ */
+.kpi-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 16px; }
+.kpi-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+.kpi-card { background: #fff; border: 1.5px solid #e8e8f0; border-radius: 10px; padding: 15px 18px; position: relative; overflow: hidden; }
+.kpi-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.kpi-card.kc-brand::after { background: #1677ff; }
+.kpi-card.kc-store::after { background: #13c2c2; }
+.kpi-card.kc-nb::after   { background: #52c41a; }
+.kpi-card.kc-ns::after   { background: #13c2c2; }
+.kpi-card.kc-cb::after   { background: #faad14; }
+.kpi-card.kc-cs::after   { background: #ff4d4f; }
+.kpi-label { font-size: 11.5px; color: #888; font-weight: 600; margin-bottom: 10px; }
+.kpi-nums { display: flex; align-items: center; gap: 8px; }
+.kpi-a  { font-size: 20px; font-weight: 700; color: #ccc; }
+.kpi-arr { color: #ddd; font-size: 14px; }
+.kpi-b  { font-size: 20px; font-weight: 700; color: #111; }
+.kpi-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; margin-left: auto; }
+.bg-up   { background: #f0faf3; color: #2d9e5f; }
+.bg-down { background: #fff0f0; color: #d94040; }
+.bg-flat { background: #f5f5f5; color: #aaa; }
+
+/* ââ Card / Table ââ */
+.card { background: #fff; border-radius: 10px; border: 1.5px solid #e8e8f0; overflow: hidden; }
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: #f9f9fc; }
+th { padding: 10px 16px; font-size: 12px; color: #aaa; font-weight: 600; text-align: left; white-space: nowrap; border-bottom: 1px solid #f0f0f5; letter-spacing: 0.3px; }
+th.r { text-align: right; }
+td { padding: 11px 16px; font-size: 13.5px; color: #333; border-bottom: 1px solid #f5f5fa; white-space: nowrap; }
+td.r { text-align: right; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fbfbff; }
+.saas-row td { background: #fafbff; }
+.saas-row:hover td { background: #f3f6ff; }
+.th-a { color: #1677ff !important; }
+.th-b { color: #aab8c2 !important; }
+
+/* ââ Tooltip ââ */
+.tip-wrap { position: relative; display: inline-flex; align-items: center; gap: 5px; }
+.tip-icon { width: 15px; height: 15px; border-radius: 50%; background: #e0e0e8; color: #888; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: help; transition: background 0.12s; user-select: none; flex-shrink: 0; }
+.tip-wrap:hover .tip-icon { background: #1677ff; color: #fff; }
+.tip-box { display: none; position: absolute; top: calc(100% + 7px); left: 0; background: #1a1a2e; color: #e8e8f0; font-size: 12px; line-height: 1.65; padding: 9px 13px; border-radius: 7px; width: 230px; z-index: 200; white-space: normal; box-shadow: 0 6px 20px rgba(0,0,0,0.15); pointer-events: none; }
+.tip-box::before { content: ''; position: absolute; bottom: 100%; left: 14px; border: 5px solid transparent; border-bottom-color: #1a1a2e; }
+.tip-wrap:hover .tip-box { display: block; }
+
+/* ââ Compare toggle ââ */
+.cmp-toggle-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  cursor: pointer; user-select: none;
+}
+.cmp-toggle-label input { display: none; }
+.cmp-toggle-track {
+  width: 36px; height: 20px; border-radius: 10px;
+  background: #e0e0ea; position: relative;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.cmp-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.cmp-toggle-label input:checked + .cmp-toggle-track { background: #1677ff; }
+.cmp-toggle-label input:checked + .cmp-toggle-track .cmp-toggle-thumb { transform: translateX(16px); }
+.cmp-toggle-text { font-size: 13px; color: #666; font-weight: 500; }
+.cmp-toggle-label input:checked ~ .cmp-toggle-text { color: #1677ff; font-weight: 600; }
+
+/* ââ Block A deltas ââ */
+.val-b { font-size: 14px; font-weight: 600; color: #111; }
+.delta { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-left: 4px; }
+.d-up   { color: #2d9e5f; background: #edfaf3; }
+.d-down { color: #d94040; background: #fff0f0; }
+.d-flat { color: #aaa;    background: #f5f5f5; }
+
+/* ââââââââââââââââââââââââââââââââââ
+   BLOCK B â Unified Period Trigger
+ââââââââââââââââââââââââââââââââââ */
+.unified-bar {
+  display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: #fff; border: 1.5px solid #e0e0ea; border-radius: 10px;
+  padding: 10px 16px; cursor: pointer; margin-bottom: 14px;
+  transition: border-color 0.15s; user-select: none;
+}
+.unified-bar:hover { border-color: #1677ff; }
+.ubar-label { font-size: 11.5px; color: #aaa; font-weight: 600; letter-spacing: 0.3px; }
+.ubar-period { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #222; }
+.ubar-vs { font-size: 11.5px; color: #bbb; font-weight: 700; letter-spacing: 0.5px; }
+.ubar-badge { font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 4px; }
+.ubb { background: #1677ff; color: #fff; }
+.uba { background: #e8e8f0; color: #777; }
+
+/* ââââââââââââââââââââââââââââââââââ
+   Unified Period Panel
+ââââââââââââââââââââââââââââââââââ */
+.uni-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(26,26,46,0.18); backdrop-filter: blur(3px);
+  align-items: flex-start; justify-content: center;
+  padding-top: 64px; padding-bottom: 24px;
+}
+.uni-overlay.open { display: flex; }
+.uni-panel {
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 16px 56px rgba(0,0,0,0.16);
+  width: 500px; max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 96px); overflow-y: auto;
+  display: flex; flex-direction: column;
+  animation: panelSlideIn 0.18s ease;
+}
+@keyframes panelSlideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.uni-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 14px; border-bottom: 1px solid #f0f0f5;
+  font-size: 15px; font-weight: 700; color: #111; flex-shrink: 0;
+}
+.uni-close-btn {
+  width: 28px; height: 28px; border-radius: 7px; border: 1.5px solid #e8e8f0;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #999; font-size: 14px; transition: all 0.12s;
+}
+.uni-close-btn:hover { border-color: #999; color: #333; }
+.uni-body { overflow-y: auto; }
+.uni-section { padding: 18px 22px; }
+.uni-section-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; font-weight: 700; color: #555;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 13px;
+}
+.uni-period-badge { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
+.uni-divider { height: 1px; background: #f0f0f5; margin: 0 22px; }
+.uni-date-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 13px; }
+.uni-mode-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.uni-mode-btn {
+  padding: 6px 14px; border-radius: 20px;
+  border: 1.5px solid #e0e0ea; background: #fff;
+  font-size: 13px; color: #666; cursor: pointer; font-family: inherit;
+  transition: all 0.12s; font-weight: 500;
+}
+.uni-mode-btn:hover { border-color: #1677ff; color: #1677ff; }
+.uni-mode-btn.active { border-color: #1677ff; background: #f0f5ff; color: #1677ff; font-weight: 700; }
+.uni-footer {
+  padding: 14px 22px; border-top: 1px solid #f0f0f5;
+  display: flex; justify-content: flex-end; gap: 8px; flex-shrink: 0;
+}
+
+.btn-download {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 8px;
+  border: 1.5px solid #e0e0ea; background: #fff;
+  font-size: 13px; color: #555; cursor: pointer; font-family: inherit;
+  transition: all 0.15s; white-space: nowrap;
+}
+.btn-download:hover { border-color: #1677ff; color: #1677ff; }
+
+/* ââ Warning banner ââ */
+.warning-bar {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: #d94040;
+  margin-bottom: 14px; padding: 0 2px;
+}
+.warning-bar svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ââââââââââââââââââââââââââââââââââ
+   Comparison dropdown panel
+ââââââââââââââââââââââââââââââââââ */
+.cmp-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+}
+.cmp-overlay.open { display: block; }
+
+.cmp-panel {
+  position: absolute;
+  background: #fff; border: 1.5px solid #e0e0ea;
+  border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  min-width: 320px; max-width: 480px; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.cmp-panel-body { display: flex; flex-wrap: wrap; }
+.cmp-modes {
+  width: 120px; flex-shrink: 0;
+  border-right: 1px solid #f0f0f5;
+  padding: 8px 0;
+}
+.cmp-mode-btn {
+  display: block; width: 100%;
+  padding: 10px 16px; text-align: left;
+  font-size: 13.5px; color: #555; cursor: pointer;
+  background: none; border: none; font-family: inherit;
+  transition: all 0.12s; border-right: 3px solid transparent;
+}
+.cmp-mode-btn:hover { background: #f5f6fa; color: #333; }
+.cmp-mode-btn.active { color: #1677ff; font-weight: 600; background: #f0f5ff; border-right-color: #1677ff; }
+
+.cmp-right { flex: 1; min-width: 200px; padding: 16px; }
+.cmp-date-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.cmp-date-label { font-size: 11.5px; color: #888; font-weight: 600; }
+.cmp-date-in { flex: 1; border: 1.5px solid #e0e0ea; border-radius: 7px; padding: 6px 10px; font-size: 13px; color: #333; font-family: inherit; background: #fafafa; outline: none; transition: border-color 0.15s; }
+.cmp-date-in:focus { border-color: #1677ff; background: #fff; }
+.cmp-date-arrow { color: #bbb; font-size: 16px; }
+
+/* Mini calendar */
+.mini-cal { user-select: none; }
+.mini-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.mini-cal-title { font-size: 13.5px; font-weight: 700; color: #111; }
+.cal-nav { width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid #e0e0ea; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #666; font-size: 14px; transition: all 0.12s; }
+.cal-nav:hover { border-color: #1677ff; color: #1677ff; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+.cal-dow { text-align: center; font-size: 11px; color: #bbb; font-weight: 600; padding: 4px 0; }
+.cal-day {
+  text-align: center; font-size: 12.5px; color: #444;
+  padding: 5px 2px; border-radius: 6px; cursor: pointer;
+  transition: all 0.1s;
+}
+.cal-day:hover:not(.empty):not(.in-range) { background: #e6f0ff; }
+.cal-day.empty { color: #ddd; cursor: default; }
+.cal-day.in-range { background: #c5d8ff; color: #1677ff; border-radius: 0; }
+.cal-day.range-start, .cal-day.range-end { background: #1677ff; color: #fff; border-radius: 6px; font-weight: 700; }
+.cal-day.range-start { border-radius: 6px 0 0 6px; }
+.cal-day.range-end   { border-radius: 0 6px 6px 0; }
+.cal-day.range-start.range-end { border-radius: 6px; }
+
+.cmp-panel-footer { padding: 12px 16px; border-top: 1px solid #f0f0f5; display: flex; justify-content: flex-end; gap: 8px; }
+.btn-ghost { padding: 6px 14px; border-radius: 7px; border: 1.5px solid #e0e0ea; background: #fff; font-size: 13px; color: #555; cursor: pointer; font-family: inherit; }
+.btn-ghost:hover { border-color: #999; }
+.btn-apply { padding: 6px 16px; border-radius: 7px; border: none; background: #ff4d4f; font-size: 13px; color: #fff; cursor: pointer; font-weight: 600; font-family: inherit; }
+.btn-apply:hover { background: #d94040; }
+
+/* ââ Chart ââ */
+.chart-card { background: #fff; border-radius: 10px; border: 1.5px solid #e8e8f0; padding: 20px 24px; margin-bottom: 14px; }
+.chart-title { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 14px; }
+.chart-wrap { position: relative; height: 260px; }
+.metric-toggles { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.mtoggle { padding: 5px 14px; border-radius: 7px; border: 1.5px solid #e0e0ea; background: #fff; font-size: 12.5px; color: #777; cursor: pointer; transition: all 0.15s; font-family: inherit; font-weight: 500; }
+.mtoggle.on-nb { border-color: #52c41a; background: #f6ffed; color: #389e0d; font-weight: 700; }
+.mtoggle.on-ns { border-color: #13c2c2; background: #e6fffb; color: #08979c; font-weight: 700; }
+.mtoggle.on-cb { border-color: #faad14; background: #fffbe6; color: #d48806; font-weight: 700; }
+.mtoggle.on-cs { border-color: #ff4d4f; background: #fff1f0; color: #cf1322; font-weight: 700; }
+
+/* growth tag */
+.growth-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.gt-up   { background: #f0faf3; color: #2d9e5f; }
+.gt-down { background: #fff0f0; color: #d94040; }
+.gt-flat { background: #f5f5f5; color: #aaa; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg></div>
+      Echoss VIP
+    </div>
+    <nav class="nav">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        åçç®¡ç
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        æ¸æå ±è¡¨
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        å¸³èæ¬é
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ä¸è¼å
+      </div>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <div class="topbar">
+      <div class="avatar-chip">
+        <div class="avatar">S</div>
+        stellaliu12cm
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="page-title">æ¸æå ±è¡¨</div>
+      <div class="tabs">
+        <div class="tab active">åçè³è¨</div>
+        <div class="tab">OTPå ±è¡¨</div>
+        <div class="tab">è«æ¬¾ç®¡ç</div>
+        <div class="tab">è«æ¬¾å ±è¡¨</div>
+      </div>
+
+      <!-- ââââââââââââââââââââââ
+           BLOCK A
+      ââââââââââââââââââââââ -->
+      <div class="section">
+        <div class="section-eyebrow">åæ¨¡çµè¨é±æ¸</div>
+
+        <!-- Title row + controls -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span class="section-title">åçæ¸ / éå¸æ¸</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="month" class="date-in" id="a-month" value="2026-04" onchange="updateACutoff()">
+              <span style="font-size:12px;color:#bbb;">è³ææªæ­¢ï¼<span id="a-cutoff">2026/04/30</span></span>
+            </div>
+          </div>
+          <button class="btn-download">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            å¯åºå ±è¡¨
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:180px;">æ¨¡çµç¯å</th>
+                  <th class="r">åçæ¸</th>
+                  <th class="r">åç YoY</th>
+                  <th class="r">åç MoM</th>
+                  <th class="r">éå¸æ¸</th>
+                  <th class="r">éå¸ YoY</th>
+                  <th class="r">éå¸ MoM</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="saas-row">
+                  <td><div class="tip-wrap">SaaSè¨é±æ¸<div class="tip-icon">i</div><div class="tip-box">ä»¥åçä¸»å¸³èçºè¨ç®å®ä½ï¼æä¸éå¸ä¸éè¤å ç¸½ï¼ååçåªè¨ä¸æ¬¡ã</div></div></td>
+                  <td class="r"><span class="val-b">486</span></td>
+                  <td class="r"><span class="delta d-up">â² +52 (+12%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +8 (+1.7%)</span></td>
+                  <td class="r"><span class="val-b">1,945</span></td>
+                  <td class="r"><span class="delta d-up">â² +187 (+10.6%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +31 (+1.6%)</span></td>
+                </tr>
+                <tr>
+                  <td>å¹«æå¸é</td>
+                  <td class="r"><span class="val-b">153</span></td>
+                  <td class="r"><span class="delta d-up">â² +26 (+20.5%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +5 (+3.4%)</span></td>
+                  <td class="r"><span class="val-b">461</span></td>
+                  <td class="r"><span class="delta d-up">â² +77 (+20%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +12 (+2.7%)</span></td>
+                </tr>
+                <tr>
+                  <td>æå¡ç³»çµ±</td>
+                  <td class="r"><span class="val-b">471</span></td>
+                  <td class="r"><span class="delta d-up">â² +48 (+11.3%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +6 (+1.3%)</span></td>
+                  <td class="r"><span class="val-b">1,870</span></td>
+                  <td class="r"><span class="delta d-up">â² +175 (+10.3%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +22 (+1.2%)</span></td>
+                </tr>
+                <tr>
+                  <td>æ¸æåæåè¡¨æ¿</td>
+                  <td class="r"><span class="val-b">4</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="val-b">52</span></td>
+                  <td class="r"><span class="delta d-down">â¼ -3 (-5.5%)</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                </tr>
+                <tr>
+                  <td>èªçç¥¨å¸</td>
+                  <td class="r"><span class="val-b">32</span></td>
+                  <td class="r"><span class="delta d-down">â¼ -12 (-27.3%)</span></td>
+                  <td class="r"><span class="delta d-down">â¼ -2 (-5.9%)</span></td>
+                  <td class="r"><span class="val-b">220</span></td>
+                  <td class="r"><span class="delta d-down">â¼ -18 (-7.6%)</span></td>
+                  <td class="r"><span class="delta d-down">â¼ -4 (-1.8%)</span></td>
+                </tr>
+                <tr>
+                  <td>åæé¸å®</td>
+                  <td class="r"><span class="val-b">81</span></td>
+                  <td class="r"><span class="delta d-up">â² +7 (+9.5%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +2 (+2.5%)</span></td>
+                  <td class="r"><span class="val-b">233</span></td>
+                  <td class="r"><span class="delta d-up">â² +19 (+8.9%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +5 (+2.2%)</span></td>
+                </tr>
+                <tr>
+                  <td>éæ²æ¨¡çµ</td>
+                  <td class="r"><span class="val-b">25</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="val-b">163</span></td>
+                  <td class="r"><span class="delta d-up">â² +6 (+3.8%)</span></td>
+                  <td class="r"><span class="delta d-up">â² +1 (+0.6%)</span></td>
+                </tr>
+                <tr>
+                  <td>è¨æ¯ä¸­å¿</td>
+                  <td class="r"><span class="val-b">8</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="val-b">35</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ââââââââââââââââââââââ
+           BLOCK B
+      ââââââââââââââââââââââ -->
+      <div class="section">
+        <div class="section-eyebrow">åæ¨¡çµè¨é±ç°åå°æ¯</div>
+        <div style="margin-bottom:14px;">
+          <span class="section-title">æéæ°å¢ / ééåçã»éå¸</span>
+        </div>
+
+        <!-- Unified period trigger bar -->
+        <div class="unified-bar" onclick="openUnifiedPanel()">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#aaa" stroke-width="1.5"><rect x="1" y="2" width="14" height="12" rx="2"/><path d="M1 6h14M5 1v2M11 1v2"/></svg>
+          <span class="ubar-label">åæåé</span>
+          <span class="ubar-period">
+            <span class="ubar-badge ubb">A</span>
+            <span id="main-bar-val">2026/1/1 â 2026/2/28</span>
+          </span>
+          <span class="ubar-vs">vs.</span>
+          <span class="ubar-period">
+            <span class="ubar-badge uba">B</span>
+            <span id="cmp-bar-val">2025/1/1 â 2025/2/28</span>
+          </span>
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#bbb" stroke-width="1.5"><polyline points="4,5 8,10 12,5"/></svg>
+        </div>
+
+        <!-- Warning bar -->
+        <div class="warning-bar" id="warning-bar" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          æéï¼ä¸»è¦æéèæ¯è¼æéçå¤©æ¸ä¸åï¼å¯è½æå½±é¿åææ¯è¼çæºç¢ºæ§ã
+        </div>
+
+        <!-- Unified period panel overlay -->
+        <div class="uni-overlay" id="uni-overlay" onclick="onOverlayClick(event)">
+          <div class="uni-panel" id="uni-panel">
+            <!-- Header -->
+            <div class="uni-header">
+              <span>è¨­å®åæåé</span>
+              <button class="uni-close-btn" onclick="closeUnifiedPanel()">â</button>
+            </div>
+            <!-- Body -->
+            <div class="uni-body">
+              <!-- Section B: Main period -->
+              <div class="uni-section">
+                <div class="uni-section-title">
+                  <span class="uni-period-badge ubb">A</span>ä¸»è¦æé
+                </div>
+                <div class="uni-date-row">
+                  <span class="cmp-date-label">éå§</span>
+                  <input type="date" class="cmp-date-in" id="main-start-in" value="2026-01-01" onchange="onMainDateChange()">
+                  <span class="cmp-date-arrow">â</span>
+                  <span class="cmp-date-label">çµæ</span>
+                  <input type="date" class="cmp-date-in" id="main-end-in" value="2026-02-28" onchange="onMainDateChange()">
+                </div>
+                <div class="mini-cal" id="main-cal"></div>
+              </div>
+
+              <div class="uni-divider"></div>
+
+              <!-- Section A: Comparison period -->
+              <div class="uni-section">
+                <div class="uni-section-title">
+                  <span class="uni-period-badge uba">B</span>æ¯è¼æé
+                </div>
+                <div class="uni-mode-row">
+                  <button class="uni-mode-btn active" onclick="setCmpMode('prev')">ä¸ææ¯è¼</button>
+                  <button class="uni-mode-btn" onclick="setCmpMode('yoy')">å»å¹´åæ</button>
+                  <button class="uni-mode-btn" onclick="setCmpMode('custom')">èªè¨</button>
+                </div>
+                <div class="uni-date-row" style="margin-top:12px;">
+                  <span class="cmp-date-label">éå§</span>
+                  <input type="date" class="cmp-date-in" id="cmp-start" value="2025-01-01" onchange="onCmpDateChange()">
+                  <span class="cmp-date-arrow">â</span>
+                  <span class="cmp-date-label">çµæ</span>
+                  <input type="date" class="cmp-date-in" id="cmp-end" value="2025-02-28" onchange="onCmpDateChange()">
+                </div>
+                <div class="mini-cal" id="mini-cal"></div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="uni-footer">
+              <button class="btn-ghost" onclick="closeUnifiedPanel()">åæ¶</button>
+              <button class="btn-apply" onclick="applyUnified()">å¥ç¨</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-card">
+          <div class="chart-title">åæ¨¡çµå°æ¯ â é»é¸ææ¨åæåè¡¨</div>
+          <div class="metric-toggles" id="metric-toggles"></div>
+          <div class="chart-wrap"><canvas id="b-chart"></canvas></div>
+        </div>
+
+        <!-- Detail table -->
+        <div class="card">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:170px;">æ¨¡çµç¯å</th>
+                  <th class="r th-a">æ°å¢åçï¼Aï¼</th><th class="r th-b">æ°å¢åçï¼Bï¼</th>
+                  <th class="r th-a">æ°å¢éå¸ï¼Aï¼</th><th class="r th-b">æ°å¢éå¸ï¼Bï¼</th>
+                  <th class="r th-a">ééåçï¼Aï¼</th><th class="r th-b">ééåçï¼Bï¼</th>
+                  <th class="r th-a">éééå¸ï¼Aï¼</th><th class="r th-b">éééå¸ï¼Bï¼</th>
+                </tr>
+              </thead>
+              <tbody id="b-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;color:#ccc;font-size:12px;padding:4px 0 20px;">
+        Copyright Â© 2026 ç¿é¼æ¸ä½è¡ä»½æéå¬å¸
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ââââââââââââââââââââââââââââââââââââââââââââ
+// BLOCK A helpers
+// ââââââââââââââââââââââââââââââââââââââââââââ
+function lastDay(ym) { const [y,m] = ym.split('-').map(Number); return new Date(y,m,0).getDate(); }
+function updateACutoff() {
+  const v = document.getElementById('a-month').value;
+  const [y,m] = v.split('-');
+  document.getElementById('a-cutoff').textContent = `${y}/${m}/${String(lastDay(v)).padStart(2,'0')}`;
+}
+
+// ââââââââââââââââââââââââââââââââââââââââââââ
+// BLOCK B â state
+// ââââââââââââââââââââââââââââââââââââââââââââ
+const MODS = ['SaaSè¨é±æ¸','å¹«æå¸é','æå¡ç³»çµ±','æ¸æåæåè¡¨æ¿','èªçç¥¨å¸','åæé¸å®','éæ²æ¨¡çµ','è¨æ¯ä¸­å¿'];
+const METRICS = [
+  { key:'nb', label:'æéæ°å¢åç', color:'#52c41a', bg:'rgba(82,196,26,0.2)',  cls:'on-nb', kpiCls:'kc-nb' },
+  { key:'ns', label:'æéæ°å¢éå¸', color:'#13c2c2', bg:'rgba(19,194,194,0.2)', cls:'on-ns', kpiCls:'kc-ns' },
+  { key:'cb', label:'æéééåç', color:'#faad14', bg:'rgba(250,173,20,0.2)', cls:'on-cb', kpiCls:'kc-cb' },
+  { key:'cs', label:'æééééå¸', color:'#ff4d4f', bg:'rgba(255,77,79,0.2)',  cls:'on-cs', kpiCls:'kc-cs' },
+];
+const DATA = {
+  A: { 'SaaSè¨é±æ¸':{nb:5,ns:10,cb:8,cs:20}, 'å¹«æå¸é':{nb:3,ns:8,cb:2,cs:5}, 'æå¡ç³»çµ±':{nb:5,ns:10,cb:8,cs:20}, 'æ¸æåæåè¡¨æ¿':{nb:0,ns:0,cb:0,cs:0}, 'èªçç¥¨å¸':{nb:1,ns:2,cb:1,cs:2}, 'åæé¸å®':{nb:0,ns:0,cb:5,cs:7}, 'éæ²æ¨¡çµ':{nb:0,ns:0,cb:1,cs:1}, 'è¨æ¯ä¸­å¿':{nb:0,ns:0,cb:0,cs:0} },
+  B: { 'SaaSè¨é±æ¸':{nb:14,ns:28,cb:61,cs:71}, 'å¹«æå¸é':{nb:9,ns:21,cb:5,cs:12}, 'æå¡ç³»çµ±':{nb:14,ns:28,cb:61,cs:71}, 'æ¸æåæåè¡¨æ¿':{nb:0,ns:0,cb:1,cs:1}, 'èªçç¥¨å¸':{nb:0,ns:0,cb:4,cs:5}, 'åæé¸å®':{nb:2,ns:2,cb:2,cs:3}, 'éæ²æ¨¡çµ':{nb:2,ns:2,cb:3,cs:3}, 'è¨æ¯ä¸­å¿':{nb:0,ns:0,cb:1,cs:1} }
+};
+
+let activeMetric = 0;
+let bChart = null;
+
+// Main period (fixed for demo)
+let mainStart = new Date('2026-01-01');
+let mainEnd   = new Date('2026-02-28');
+
+// Comparison period
+let cmpStart = new Date('2025-01-01');
+let cmpEnd   = new Date('2025-02-28');
+let cmpMode  = 'prev';
+
+// Calendar state â main period
+let mainCalYear = 2026, mainCalMonth = 0; // Jan 2026
+// Calendar state â comparison period
+let calYear = 2025, calMonth = 0; // Jan 2025
+
+// ââââââââââââââââââââââââââââââââââââââââââââ
+// Unified panel
+// ââââââââââââââââââââââââââââââââââââââââââââ
+function openUnifiedPanel() {
+  // sync inputs with current state
+  document.getElementById('main-start-in').value = fmt(mainStart);
+  document.getElementById('main-end-in').value   = fmt(mainEnd);
+  document.getElementById('cmp-start').value     = fmt(cmpStart);
+  document.getElementById('cmp-end').value       = fmt(cmpEnd);
+  mainCalYear = mainStart.getFullYear(); mainCalMonth = mainStart.getMonth();
+  calYear     = cmpStart.getFullYear();  calMonth     = cmpStart.getMonth();
+  document.getElementById('uni-overlay').classList.add('open');
+  renderMainCal();
+  renderMiniCal();
+}
+function closeUnifiedPanel() {
+  document.getElementById('uni-overlay').classList.remove('open');
+}
+function onOverlayClick(e) {
+  if (e.target === document.getElementById('uni-overlay')) closeUnifiedPanel();
+}
+
+function onMainDateChange() {
+  mainStart = new Date(document.getElementById('main-start-in').value);
+  mainEnd   = new Date(document.getElementById('main-end-in').value);
+  mainCalYear  = mainStart.getFullYear(); mainCalMonth = mainStart.getMonth();
+  renderMainCal();
+  // re-auto-calculate cmp if not custom
+  if (cmpMode !== 'custom') setCmpMode(cmpMode);
+}
+
+function setCmpMode(mode) {
+  cmpMode = mode;
+  document.querySelectorAll('.uni-mode-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['prev','yoy','custom'][i] === mode);
+  });
+  const mainDays = Math.round((mainEnd - mainStart) / 86400000);
+  let s, e;
+  if (mode === 'prev') {
+    e = new Date(mainStart.getTime() - 86400000);
+    s = new Date(e.getTime() - mainDays * 86400000);
+  } else if (mode === 'yoy') {
+    s = new Date(mainStart); s.setFullYear(s.getFullYear() - 1);
+    e = new Date(mainEnd);   e.setFullYear(e.getFullYear() - 1);
+  } else {
+    s = new Date(cmpStart); e = new Date(cmpEnd);
+  }
+  if (mode !== 'custom') { cmpStart = s; cmpEnd = e; }
+  document.getElementById('cmp-start').value = fmt(cmpStart);
+  document.getElementById('cmp-end').value   = fmt(cmpEnd);
+  calYear = cmpStart.getFullYear(); calMonth = cmpStart.getMonth();
+  renderMiniCal();
+}
+
+function onCmpDateChange() {
+  cmpMode  = 'custom';
+  document.querySelectorAll('.uni-mode-btn').forEach((b,i) => {
+    b.classList.toggle('active', i === 2);
+  });
+  cmpStart = new Date(document.getElementById('cmp-start').value);
+  cmpEnd   = new Date(document.getElementById('cmp-end').value);
+  calYear  = cmpStart.getFullYear(); calMonth = cmpStart.getMonth();
+  renderMiniCal();
+}
+
+function applyUnified() {
+  mainStart = new Date(document.getElementById('main-start-in').value);
+  mainEnd   = new Date(document.getElementById('main-end-in').value);
+  cmpStart  = new Date(document.getElementById('cmp-start').value);
+  cmpEnd    = new Date(document.getElementById('cmp-end').value);
+  document.getElementById('main-bar-val').textContent = `${fmtShort(mainStart)} â ${fmtShort(mainEnd)}`;
+  document.getElementById('cmp-bar-val').textContent  = `${fmtShort(cmpStart)} â ${fmtShort(cmpEnd)}`;
+  closeUnifiedPanel();
+  checkWarning();
+  renderB();
+}
+
+function checkWarning() {
+  const mainDays = Math.round((mainEnd   - mainStart) / 86400000);
+  const cmpDays  = Math.round((cmpEnd    - cmpStart)  / 86400000);
+  document.getElementById('warning-bar').style.display = mainDays !== cmpDays ? 'flex' : 'none';
+}
+
+// ââââââââââââââââââââââââââââââââââââââââââââ
+// Mini calendar
+// ââââââââââââââââââââââââââââââââââââââââââââ
+const DOW = ['æ¥','ä¸','äº','ä¸','å','äº','å­'];
+function fmt(d) { return d.toISOString().slice(0,10); }
+function fmtShort(d) { return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`; }
+
+function renderMainCal() {
+  const cal = document.getElementById('main-cal');
+  const s = new Date(document.getElementById('main-start-in').value);
+  const e = new Date(document.getElementById('main-end-in').value);
+  cal.innerHTML = buildCalHtml(mainCalYear, mainCalMonth, s, e, 'mainCalMove');
+}
+function mainCalMove(d) {
+  mainCalMonth += d;
+  if (mainCalMonth > 11) { mainCalMonth = 0; mainCalYear++; }
+  if (mainCalMonth < 0)  { mainCalMonth = 11; mainCalYear--; }
+  renderMainCal();
+}
+
+function buildCalHtml(yr, mo, s, e, moveFn) {
+  const monthNames = ['1æ','2æ','3æ','4æ','5æ','6æ','7æ','8æ','9æ','10æ','11æ','12æ'];
+  const first = new Date(yr, mo, 1).getDay();
+  const total = new Date(yr, mo+1, 0).getDate();
+  let days = '';
+  DOW.forEach(d => { days += `<div class="cal-dow">${d}</div>`; });
+  for (let i = 0; i < first; i++) days += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= total; d++) {
+    const cur = new Date(yr, mo, d);
+    const t = cur.getTime(), st = s.getTime(), et = e.getTime();
+    let cls = 'cal-day';
+    if (t === st) cls += ' range-start';
+    if (t === et) cls += ' range-end';
+    if (t > st && t < et) cls += ' in-range';
+    days += `<div class="${cls}">${d}</div>`;
+  }
+  return `<div class="mini-cal-header">
+    <button class="cal-nav" onclick="${moveFn}(-1)">â¹</button>
+    <span class="mini-cal-title">${yr}òºt${monthNames[mo]}</span>
+    <button class="cal-nav" onclick="${moveFn}(1)">âº</button>
+  </div><div class="cal-grid">${days}</div>`;
+}
+
+function renderMiniCal() {
+  const cal = document.getElementById('mini-cal');
+  const s = new Date(document.getElementById('cmp-start').value);
+  const e = new Date(document.getElementById('cmp-end').value);
+  cal.innerHTML = buildCalHtml(calYear, calMonth, s, e, 'calMove');
+}
+function calMove(d) {
+  calMonth += d;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderMiniCal();
+}
+
+// ââââââââââââââââââââââââââââââââââââââââââââ
+// Block B render
+// ââââââââââââââââââââââââââââââââââââââââââââ
+function growthPct(a,b) { if(a===0&&b===0) return null; if(a===0) return null; return ((b-a)/a)*100; }
+function growthTag(a,b) {
+  const g = growthPct(a,b);
+  if(g===null) return `<span class="growth-tag gt-flat">â</span>`;
+  const cls = g>0?'gt-up':g<0?'gt-down':'gt-flat';
+  const arrow = g>0?'â':g<0?'â':'â';
+  return `<span class="growth-tag ${cls}">${arrow} ${Math.abs(g).toFixed(1)}%</span>`;
+}
+function growthBadge(a,b) {
+  const g = growthPct(a,b);
+  if(g===null) return ['bg-flat','â'];
+  if(g>0) return ['bg-up',`â² +${b-a} (+${g.toFixed(1)}%)`];
+  if(g<0) return ['bg-down',`â¼ ${b-a} (${g.toFixed(1)}%)`];
+  return ['bg-flat','â 0'];
+}
+function sumMetric(period,key) { return MODS.reduce((s,m)=>s+DATA[period][m][key],0); }
+
+function renderBKPI() {
+  const el = document.getElementById('b-kpi-row');
+  el.innerHTML = METRICS.map(m => {
+    const a = sumMetric('A',m.key), b = sumMetric('B',m.key);
+    const [bc, bt] = growthBadge(a,b);
+    return `<div class="kpi-card ${m.kpiCls}">
+      <div class="kpi-label">${m.label}</div>
+      <div class="kpi-nums">
+        <span class="kpi-a">${a}</span><span class="kpi-arr">â</span><span class="kpi-b">${b}</span>
+        <span class="kpi-badge ${bc}">${bt}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildToggles() {
+  const el = document.getElementById('metric-toggles');
+  if (el.innerHTML) return;
+  el.innerHTML = METRICS.map((m,i) =>
+    `<button class="mtoggle ${i===0?m.cls:''}" onclick="setMetric(${i})" data-mi="${i}">${m.label}</button>`
+  ).join('');
+}
+function setMetric(i) {
+  activeMetric = i;
+  document.querySelectorAll('.mtoggle').forEach((b,idx) => {
+    b.className = 'mtoggle' + (idx===i ? ' '+METRICS[idx].cls : '');
+  });
+  renderBChart();
+}
+
+function renderBChart() {
+  if (bChart) { bChart.destroy(); bChart = null; }
+  const m = METRICS[activeMetric];
+  const lA = `æé Aï¼${fmtShort(mainStart)} â ${fmtShort(mainEnd)}ï¼`;
+  const lB = `æé Bï¼${fmtShort(cmpStart)} â ${fmtShort(cmpEnd)}ï¼`;
+  bChart = new Chart(document.getElementById('b-chart'), {
+    type: 'bar',
+    data: {
+      labels: MODS,
+      datasets: [
+        { label: lA, data: MODS.map(mod=>DATA.B[mod][m.key]), backgroundColor:m.bg, borderColor:m.color, borderWidth:1.5, borderRadius:5 },
+        { label: lB, data: MODS.map(mod=>DATA.A[mod][m.key]), backgroundColor:'rgba(170,184,194,0.3)', borderColor:'rgba(170,184,194,0.7)', borderWidth:1.5, borderRadius:5 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{ labels:{ color:'#666', font:{size:12}, boxWidth:12, padding:16 } },
+        tooltip: {
+          backgroundColor:'#fff', borderColor:'#e0e0ea', borderWidth:1,
+          titleColor:'#111', bodyColor:'#555', padding:10,
+          callbacks: {
+            afterBody(items) {
+              if (items.length < 2) return [];
+              const a = items[0].raw, b = items[1].raw;
+              const g = growthPct(a,b);
+              return g!==null ? [`æé·çï¼${g>0?'+':''}${g.toFixed(1)}%`] : [];
+            }
+          }
+        }
+      },
+      scales: {
+        x:{ grid:{color:'rgba(0,0,0,0.04)'}, ticks:{color:'#888',font:{size:11}} },
+        y:{ grid:{color:'rgba(0,0,0,0.04)'}, ticks:{color:'#888',font:{size:11}}, beginAtZero:true }
+      }
+    }
+  });
+}
+
+function renderBTable() {
+  const tbody = document.getElementById('b-tbody');
+  tbody.innerHTML = MODS.map((mod,idx) => {
+    const isSaaS = idx === 0;
+    const rowCls = isSaaS ? 'class="saas-row"' : '';
+    const name = isSaaS
+      ? `<div class="tip-wrap" style="font-weight:700;">SaaSè¨é±æ¸<div class="tip-icon">i</div><div class="tip-box">ä»¥åçä¸»å¸³èçºè¨ç®å®ä½ï¼æä¸éå¸ä¸éè¤å ç¸½ï¼ååçåªè¨ä¸æ¬¡ã</div></div>`
+      : mod;
+    const cells = METRICS.map(m => {
+      const cmp = DATA.A[mod][m.key], main = DATA.B[mod][m.key];
+      return `<td class="r" style="font-weight:600;">${main}${growthTag(cmp,main)}</td><td class="r" style="color:#bbb;">${cmp}</td>`;
+    }).join('');
+    return `<tr ${rowCls}><td>${name}</td>${cells}</tr>`;
+  }).join('');
+}
+
+function renderB() { buildToggles(); renderBChart(); renderBTable(); }
+
+// ââ init ââââââââââââââââââââââââââââââââââ
+// Set initial comparison period (ä¸æ: day before mainStart, same span)
+(function initCmp() {
+  const mainDays = Math.round((mainEnd - mainStart) / 86400000);
+  const e = new Date(mainStart.getTime() - 86400000);
+  const s = new Date(e.getTime() - mainDays * 86400000);
+  cmpStart = s; cmpEnd = e;
+  cmpMode = 'prev';
+})();
+renderB();
+checkWarning();
+</script>
+</body>
+</html>

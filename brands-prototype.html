@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>åçè³è¨ Prototype v5 â Echoss VIP</title>
+<title>品牌資訊 Prototype v5 — Echoss VIP</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,7 +13,7 @@ body {
 }
 .layout { display: flex; min-height: 100vh; }
 
-/* ââ Sidebar ââ */
+/* ── Sidebar ── */
 .sidebar { width: 210px; flex-shrink: 0; background: #fff; border-right: 1px solid #ebebf0; }
 .sidebar-logo {
   display: flex; align-items: center; gap: 10px; padding: 17px 20px;
@@ -27,7 +27,7 @@ body {
 .nav-item.active { background: #eef2ff; color: #1677ff; font-weight: 600; }
 .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
 
-/* ââ Content ââ */
+/* ── Content ── */
 .content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .topbar { height: 50px; background: #fff; border-bottom: 1px solid #ebebf0; display: flex; align-items: center; justify-content: flex-end; padding: 0 28px; flex-shrink: 0; }
 .avatar-chip { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #555; }
@@ -35,18 +35,18 @@ body {
 .main { flex: 1; padding: 24px 32px; overflow-y: auto; }
 .page-title { font-size: 18px; font-weight: 700; color: #111; margin-bottom: 18px; }
 
-/* ââ Tabs ââ */
+/* ── Tabs ── */
 .tabs { display: flex; border-bottom: 1.5px solid #eaeaf0; margin-bottom: 28px; }
 .tab { padding: 9px 18px; font-size: 13.5px; color: #999; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1.5px; transition: all 0.12s; }
 .tab:hover { color: #1677ff; }
 .tab.active { color: #1677ff; border-bottom-color: #1677ff; font-weight: 600; }
 
-/* ââ Section ââ */
+/* ── Section ── */
 .section { margin-bottom: 32px; }
 .section-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #1677ff; background: #e6f0ff; border-radius: 4px; padding: 2px 8px; display: inline-block; margin-bottom: 6px; }
 .section-title { font-size: 15px; font-weight: 700; color: #111; }
 
-/* ââ Block A period row ââ */
+/* ── Block A period row ── */
 .period-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
 .period-card { background: #fff; border: 1.5px solid #e8e8f0; border-radius: 10px; padding: 14px 18px; }
 .period-card.pa { border-top: 3px solid #aab8c2; }
@@ -59,7 +59,7 @@ body {
 .date-in:focus { border-color: #1677ff; background: #fff; }
 .date-sep { color: #bbb; font-size: 13px; }
 
-/* ââ KPI cards ââ */
+/* ── KPI cards ── */
 .kpi-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 16px; }
 .kpi-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
 .kpi-card { background: #fff; border: 1.5px solid #e8e8f0; border-radius: 10px; padding: 15px 18px; position: relative; overflow: hidden; }
@@ -80,7 +80,7 @@ body {
 .bg-down { background: #fff0f0; color: #d94040; }
 .bg-flat { background: #f5f5f5; color: #aaa; }
 
-/* ââ Card / Table ââ */
+/* ── Card / Table ── */
 .card { background: #fff; border-radius: 10px; border: 1.5px solid #e8e8f0; overflow: hidden; }
 .tbl-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
@@ -96,7 +96,7 @@ tr:hover td { background: #fbfbff; }
 .th-a { color: #1677ff !important; }
 .th-b { color: #aab8c2 !important; }
 
-/* ââ Tooltip ââ */
+/* ── Tooltip ── */
 .tip-wrap { position: relative; display: inline-flex; align-items: center; gap: 5px; }
 .tip-icon { width: 15px; height: 15px; border-radius: 50%; background: #e0e0e8; color: #888; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: help; transition: background 0.12s; user-select: none; flex-shrink: 0; }
 .tip-wrap:hover .tip-icon { background: #1677ff; color: #fff; }
@@ -104,7 +104,7 @@ tr:hover td { background: #fbfbff; }
 .tip-box::before { content: ''; position: absolute; bottom: 100%; left: 14px; border: 5px solid transparent; border-bottom-color: #1a1a2e; }
 .tip-wrap:hover .tip-box { display: block; }
 
-/* ââ Compare toggle ââ */
+/* ── Compare toggle ── */
 .cmp-toggle-label {
   display: inline-flex; align-items: center; gap: 8px;
   cursor: pointer; user-select: none;
@@ -126,16 +126,16 @@ tr:hover td { background: #fbfbff; }
 .cmp-toggle-text { font-size: 13px; color: #666; font-weight: 500; }
 .cmp-toggle-label input:checked ~ .cmp-toggle-text { color: #1677ff; font-weight: 600; }
 
-/* ââ Block A deltas ââ */
+/* ── Block A deltas ── */
 .val-b { font-size: 14px; font-weight: 600; color: #111; }
 .delta { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-left: 4px; }
 .d-up   { color: #2d9e5f; background: #edfaf3; }
 .d-down { color: #d94040; background: #fff0f0; }
 .d-flat { color: #aaa;    background: #f5f5f5; }
 
-/* ââââââââââââââââââââââââââââââââââ
-   BLOCK B â Unified Period Trigger
-ââââââââââââââââââââââââââââââââââ */
+/* ══════════════════════════════════
+   BLOCK B — Unified Period Trigger
+══════════════════════════════════ */
 .unified-bar {
   display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;
   background: #fff; border: 1.5px solid #e0e0ea; border-radius: 10px;
@@ -150,9 +150,9 @@ tr:hover td { background: #fbfbff; }
 .ubb { background: #1677ff; color: #fff; }
 .uba { background: #e8e8f0; color: #777; }
 
-/* ââââââââââââââââââââââââââââââââââ
+/* ══════════════════════════════════
    Unified Period Panel
-ââââââââââââââââââââââââââââââââââ */
+══════════════════════════════════ */
 .uni-overlay {
   display: none; position: fixed; inset: 0; z-index: 500;
   background: rgba(26,26,46,0.18); backdrop-filter: blur(3px);
@@ -217,7 +217,7 @@ tr:hover td { background: #fbfbff; }
 }
 .btn-download:hover { border-color: #1677ff; color: #1677ff; }
 
-/* ââ Warning banner ââ */
+/* ── Warning banner ── */
 .warning-bar {
   display: flex; align-items: center; gap: 6px;
   font-size: 12.5px; color: #d94040;
@@ -225,9 +225,9 @@ tr:hover td { background: #fbfbff; }
 }
 .warning-bar svg { width: 14px; height: 14px; flex-shrink: 0; }
 
-/* ââââââââââââââââââââââââââââââââââ
+/* ══════════════════════════════════
    Comparison dropdown panel
-ââââââââââââââââââââââââââââââââââ */
+══════════════════════════════════ */
 .cmp-overlay {
   display: none; position: fixed; inset: 0; z-index: 500;
 }
@@ -290,7 +290,7 @@ tr:hover td { background: #fbfbff; }
 .btn-apply { padding: 6px 16px; border-radius: 7px; border: none; background: #ff4d4f; font-size: 13px; color: #fff; cursor: pointer; font-weight: 600; font-family: inherit; }
 .btn-apply:hover { background: #d94040; }
 
-/* ââ Chart ââ */
+/* ── Chart ── */
 .chart-card { background: #fff; border-radius: 10px; border: 1.5px solid #e8e8f0; padding: 20px 24px; margin-bottom: 14px; }
 .chart-title { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 14px; }
 .chart-wrap { position: relative; height: 260px; }
@@ -320,19 +320,19 @@ tr:hover td { background: #fbfbff; }
     <nav class="nav">
       <div class="nav-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        åçç®¡ç
+        品牌管理
       </div>
       <div class="nav-item active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        æ¸æå ±è¡¨
+        數據報表
       </div>
       <div class="nav-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        å¸³èæ¬é
+        帳號權限
       </div>
       <div class="nav-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        ä¸è¼å
+        下載區
       </div>
     </nav>
   </aside>
@@ -346,32 +346,32 @@ tr:hover td { background: #fbfbff; }
     </div>
 
     <div class="main">
-      <div class="page-title">æ¸æå ±è¡¨</div>
+      <div class="page-title">數據報表</div>
       <div class="tabs">
-        <div class="tab active">åçè³è¨</div>
-        <div class="tab">OTPå ±è¡¨</div>
-        <div class="tab">è«æ¬¾ç®¡ç</div>
-        <div class="tab">è«æ¬¾å ±è¡¨</div>
+        <div class="tab active">品牌資訊</div>
+        <div class="tab">OTP報表</div>
+        <div class="tab">請款管理</div>
+        <div class="tab">請款報表</div>
       </div>
 
-      <!-- ââââââââââââââââââââââ
+      <!-- ══════════════════════
            BLOCK A
-      ââââââââââââââââââââââ -->
+      ══════════════════════ -->
       <div class="section">
-        <div class="section-eyebrow">åæ¨¡çµè¨é±æ¸</div>
+        <div class="section-eyebrow">各模組訂閱數</div>
 
         <!-- Title row + controls -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <span class="section-title">åçæ¸ / éå¸æ¸</span>
+            <span class="section-title">品牌數 / 門市數</span>
             <div style="display:flex;align-items:center;gap:8px;">
               <input type="month" class="date-in" id="a-month" value="2026-04" onchange="updateACutoff()">
-              <span style="font-size:12px;color:#bbb;">è³ææªæ­¢ï¼<span id="a-cutoff">2026/04/30</span></span>
+              <span style="font-size:12px;color:#bbb;">資料截止：<span id="a-cutoff">2026/04/30</span></span>
             </div>
           </div>
           <button class="btn-download">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            å¯åºå ±è¡¨
+            匯出報表
           </button>
         </div>
 
@@ -380,87 +380,87 @@ tr:hover td { background: #fbfbff; }
             <table>
               <thead>
                 <tr>
-                  <th style="width:180px;">æ¨¡çµç¯å</th>
-                  <th class="r">åçæ¸</th>
-                  <th class="r">åç YoY</th>
-                  <th class="r">åç MoM</th>
-                  <th class="r">éå¸æ¸</th>
-                  <th class="r">éå¸ YoY</th>
-                  <th class="r">éå¸ MoM</th>
+                  <th style="width:180px;">模組範圍</th>
+                  <th class="r">品牌數</th>
+                  <th class="r">品牌 YoY</th>
+                  <th class="r">品牌 MoM</th>
+                  <th class="r">門市數</th>
+                  <th class="r">門市 YoY</th>
+                  <th class="r">門市 MoM</th>
                 </tr>
               </thead>
               <tbody>
                 <tr class="saas-row">
-                  <td><div class="tip-wrap">SaaSè¨é±æ¸<div class="tip-icon">i</div><div class="tip-box">ä»¥åçä¸»å¸³èçºè¨ç®å®ä½ï¼æä¸éå¸ä¸éè¤å ç¸½ï¼ååçåªè¨ä¸æ¬¡ã</div></div></td>
+                  <td><div class="tip-wrap">SaaS訂閱數<div class="tip-icon">i</div><div class="tip-box">以品牌主帳號為計算單位，旗下門市不重複加總，同品牌只計一次。</div></div></td>
                   <td class="r"><span class="val-b">486</span></td>
-                  <td class="r"><span class="delta d-up">â² +52 (+12%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +8 (+1.7%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +52 (+12%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +8 (+1.7%)</span></td>
                   <td class="r"><span class="val-b">1,945</span></td>
-                  <td class="r"><span class="delta d-up">â² +187 (+10.6%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +31 (+1.6%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +187 (+10.6%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +31 (+1.6%)</span></td>
                 </tr>
                 <tr>
-                  <td>å¹«æå¸é</td>
+                  <td>幫手市集</td>
                   <td class="r"><span class="val-b">153</span></td>
-                  <td class="r"><span class="delta d-up">â² +26 (+20.5%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +5 (+3.4%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +26 (+20.5%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +5 (+3.4%)</span></td>
                   <td class="r"><span class="val-b">461</span></td>
-                  <td class="r"><span class="delta d-up">â² +77 (+20%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +12 (+2.7%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +77 (+20%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +12 (+2.7%)</span></td>
                 </tr>
                 <tr>
-                  <td>æå¡ç³»çµ±</td>
+                  <td>會員系統</td>
                   <td class="r"><span class="val-b">471</span></td>
-                  <td class="r"><span class="delta d-up">â² +48 (+11.3%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +6 (+1.3%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +48 (+11.3%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +6 (+1.3%)</span></td>
                   <td class="r"><span class="val-b">1,870</span></td>
-                  <td class="r"><span class="delta d-up">â² +175 (+10.3%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +22 (+1.2%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +175 (+10.3%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +22 (+1.2%)</span></td>
                 </tr>
                 <tr>
-                  <td>æ¸æåæåè¡¨æ¿</td>
+                  <td>數據分析儀表板</td>
                   <td class="r"><span class="val-b">4</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
                   <td class="r"><span class="val-b">52</span></td>
-                  <td class="r"><span class="delta d-down">â¼ -3 (-5.5%)</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-down">▼ -3 (-5.5%)</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
                 </tr>
                 <tr>
-                  <td>èªçç¥¨å¸</td>
+                  <td>自營票券</td>
                   <td class="r"><span class="val-b">32</span></td>
-                  <td class="r"><span class="delta d-down">â¼ -12 (-27.3%)</span></td>
-                  <td class="r"><span class="delta d-down">â¼ -2 (-5.9%)</span></td>
+                  <td class="r"><span class="delta d-down">▼ -12 (-27.3%)</span></td>
+                  <td class="r"><span class="delta d-down">▼ -2 (-5.9%)</span></td>
                   <td class="r"><span class="val-b">220</span></td>
-                  <td class="r"><span class="delta d-down">â¼ -18 (-7.6%)</span></td>
-                  <td class="r"><span class="delta d-down">â¼ -4 (-1.8%)</span></td>
+                  <td class="r"><span class="delta d-down">▼ -18 (-7.6%)</span></td>
+                  <td class="r"><span class="delta d-down">▼ -4 (-1.8%)</span></td>
                 </tr>
                 <tr>
-                  <td>åæé¸å®</td>
+                  <td>圖文選單</td>
                   <td class="r"><span class="val-b">81</span></td>
-                  <td class="r"><span class="delta d-up">â² +7 (+9.5%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +2 (+2.5%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +7 (+9.5%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +2 (+2.5%)</span></td>
                   <td class="r"><span class="val-b">233</span></td>
-                  <td class="r"><span class="delta d-up">â² +19 (+8.9%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +5 (+2.2%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +19 (+8.9%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +5 (+2.2%)</span></td>
                 </tr>
                 <tr>
-                  <td>éæ²æ¨¡çµ</td>
+                  <td>遊戲模組</td>
                   <td class="r"><span class="val-b">25</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
                   <td class="r"><span class="val-b">163</span></td>
-                  <td class="r"><span class="delta d-up">â² +6 (+3.8%)</span></td>
-                  <td class="r"><span class="delta d-up">â² +1 (+0.6%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +6 (+3.8%)</span></td>
+                  <td class="r"><span class="delta d-up">▲ +1 (+0.6%)</span></td>
                 </tr>
                 <tr>
-                  <td>è¨æ¯ä¸­å¿</td>
+                  <td>訊息中心</td>
                   <td class="r"><span class="val-b">8</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
                   <td class="r"><span class="val-b">35</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
-                  <td class="r"><span class="delta d-flat">â 0</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
+                  <td class="r"><span class="delta d-flat">— 0</span></td>
                 </tr>
               </tbody>
             </table>
@@ -468,27 +468,27 @@ tr:hover td { background: #fbfbff; }
         </div>
       </div>
 
-      <!-- ââââââââââââââââââââââ
+      <!-- ══════════════════════
            BLOCK B
-      ââââââââââââââââââââââ -->
+      ══════════════════════ -->
       <div class="section">
-        <div class="section-eyebrow">åæ¨¡çµè¨é±ç°åå°æ¯</div>
+        <div class="section-eyebrow">各模組訂閱異動對比</div>
         <div style="margin-bottom:14px;">
-          <span class="section-title">æéæ°å¢ / ééåçã»éå¸</span>
+          <span class="section-title">期間新增 / 關閉品牌・門市</span>
         </div>
 
         <!-- Unified period trigger bar -->
         <div class="unified-bar" onclick="openUnifiedPanel()">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#aaa" stroke-width="1.5"><rect x="1" y="2" width="14" height="12" rx="2"/><path d="M1 6h14M5 1v2M11 1v2"/></svg>
-          <span class="ubar-label">åæåé</span>
+          <span class="ubar-label">分析區間</span>
           <span class="ubar-period">
             <span class="ubar-badge ubb">A</span>
-            <span id="main-bar-val">2026/1/1 â 2026/2/28</span>
+            <span id="main-bar-val">2026/1/1 – 2026/2/28</span>
           </span>
           <span class="ubar-vs">vs.</span>
           <span class="ubar-period">
             <span class="ubar-badge uba">B</span>
-            <span id="cmp-bar-val">2025/1/1 â 2025/2/28</span>
+            <span id="cmp-bar-val">2025/1/1 – 2025/2/28</span>
           </span>
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#bbb" stroke-width="1.5"><polyline points="4,5 8,10 12,5"/></svg>
         </div>
@@ -496,7 +496,7 @@ tr:hover td { background: #fbfbff; }
         <!-- Warning bar -->
         <div class="warning-bar" id="warning-bar" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          æéï¼ä¸»è¦æéèæ¯è¼æéçå¤©æ¸ä¸åï¼å¯è½æå½±é¿åææ¯è¼çæºç¢ºæ§ã
+          提醒：主要期間與比較期間的天數不同，可能會影響同期比較的準確性。
         </div>
 
         <!-- Unified period panel overlay -->
@@ -504,21 +504,21 @@ tr:hover td { background: #fbfbff; }
           <div class="uni-panel" id="uni-panel">
             <!-- Header -->
             <div class="uni-header">
-              <span>è¨­å®åæåé</span>
-              <button class="uni-close-btn" onclick="closeUnifiedPanel()">â</button>
+              <span>設定分析區間</span>
+              <button class="uni-close-btn" onclick="closeUnifiedPanel()">✕</button>
             </div>
             <!-- Body -->
             <div class="uni-body">
               <!-- Section B: Main period -->
               <div class="uni-section">
                 <div class="uni-section-title">
-                  <span class="uni-period-badge ubb">A</span>ä¸»è¦æé
+                  <span class="uni-period-badge ubb">A</span>主要期間
                 </div>
                 <div class="uni-date-row">
-                  <span class="cmp-date-label">éå§</span>
+                  <span class="cmp-date-label">開始</span>
                   <input type="date" class="cmp-date-in" id="main-start-in" value="2026-01-01" onchange="onMainDateChange()">
-                  <span class="cmp-date-arrow">â</span>
-                  <span class="cmp-date-label">çµæ</span>
+                  <span class="cmp-date-arrow">→</span>
+                  <span class="cmp-date-label">結束</span>
                   <input type="date" class="cmp-date-in" id="main-end-in" value="2026-02-28" onchange="onMainDateChange()">
                 </div>
                 <div class="mini-cal" id="main-cal"></div>
@@ -529,18 +529,18 @@ tr:hover td { background: #fbfbff; }
               <!-- Section A: Comparison period -->
               <div class="uni-section">
                 <div class="uni-section-title">
-                  <span class="uni-period-badge uba">B</span>æ¯è¼æé
+                  <span class="uni-period-badge uba">B</span>比較期間
                 </div>
                 <div class="uni-mode-row">
-                  <button class="uni-mode-btn active" onclick="setCmpMode('prev')">ä¸ææ¯è¼</button>
-                  <button class="uni-mode-btn" onclick="setCmpMode('yoy')">å»å¹´åæ</button>
-                  <button class="uni-mode-btn" onclick="setCmpMode('custom')">èªè¨</button>
+                  <button class="uni-mode-btn active" onclick="setCmpMode('prev')">上期比較</button>
+                  <button class="uni-mode-btn" onclick="setCmpMode('yoy')">去年同期</button>
+                  <button class="uni-mode-btn" onclick="setCmpMode('custom')">自訂</button>
                 </div>
                 <div class="uni-date-row" style="margin-top:12px;">
-                  <span class="cmp-date-label">éå§</span>
+                  <span class="cmp-date-label">開始</span>
                   <input type="date" class="cmp-date-in" id="cmp-start" value="2025-01-01" onchange="onCmpDateChange()">
-                  <span class="cmp-date-arrow">â</span>
-                  <span class="cmp-date-label">çµæ</span>
+                  <span class="cmp-date-arrow">→</span>
+                  <span class="cmp-date-label">結束</span>
                   <input type="date" class="cmp-date-in" id="cmp-end" value="2025-02-28" onchange="onCmpDateChange()">
                 </div>
                 <div class="mini-cal" id="mini-cal"></div>
@@ -548,15 +548,15 @@ tr:hover td { background: #fbfbff; }
             </div>
             <!-- Footer -->
             <div class="uni-footer">
-              <button class="btn-ghost" onclick="closeUnifiedPanel()">åæ¶</button>
-              <button class="btn-apply" onclick="applyUnified()">å¥ç¨</button>
+              <button class="btn-ghost" onclick="closeUnifiedPanel()">取消</button>
+              <button class="btn-apply" onclick="applyUnified()">套用</button>
             </div>
           </div>
         </div>
 
         <!-- Chart -->
         <div class="chart-card">
-          <div class="chart-title">åæ¨¡çµå°æ¯ â é»é¸ææ¨åæåè¡¨</div>
+          <div class="chart-title">各模組對比 — 點選指標切換圖表</div>
           <div class="metric-toggles" id="metric-toggles"></div>
           <div class="chart-wrap"><canvas id="b-chart"></canvas></div>
         </div>
@@ -567,11 +567,11 @@ tr:hover td { background: #fbfbff; }
             <table>
               <thead>
                 <tr>
-                  <th style="width:170px;">æ¨¡çµç¯å</th>
-                  <th class="r th-a">æ°å¢åçï¼Aï¼</th><th class="r th-b">æ°å¢åçï¼Bï¼</th>
-                  <th class="r th-a">æ°å¢éå¸ï¼Aï¼</th><th class="r th-b">æ°å¢éå¸ï¼Bï¼</th>
-                  <th class="r th-a">ééåçï¼Aï¼</th><th class="r th-b">ééåçï¼Bï¼</th>
-                  <th class="r th-a">éééå¸ï¼Aï¼</th><th class="r th-b">éééå¸ï¼Bï¼</th>
+                  <th style="width:170px;">模組範圍</th>
+                  <th class="r th-a">新增品牌（A）</th><th class="r th-b">新增品牌（B）</th>
+                  <th class="r th-a">新增門市（A）</th><th class="r th-b">新增門市（B）</th>
+                  <th class="r th-a">關閉品牌（A）</th><th class="r th-b">關閉品牌（B）</th>
+                  <th class="r th-a">關閉門市（A）</th><th class="r th-b">關閉門市（B）</th>
                 </tr>
               </thead>
               <tbody id="b-tbody"></tbody>
@@ -581,16 +581,16 @@ tr:hover td { background: #fbfbff; }
       </div>
 
       <div style="text-align:center;color:#ccc;font-size:12px;padding:4px 0 20px;">
-        Copyright Â© 2026 ç¿é¼æ¸ä½è¡ä»½æéå¬å¸
+        Copyright © 2026 睿鼎數位股份有限公司
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────
 // BLOCK A helpers
-// ââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────
 function lastDay(ym) { const [y,m] = ym.split('-').map(Number); return new Date(y,m,0).getDate(); }
 function updateACutoff() {
   const v = document.getElementById('a-month').value;
@@ -598,19 +598,19 @@ function updateACutoff() {
   document.getElementById('a-cutoff').textContent = `${y}/${m}/${String(lastDay(v)).padStart(2,'0')}`;
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââ
-// BLOCK B â state
-// ââââââââââââââââââââââââââââââââââââââââââââ
-const MODS = ['SaaSè¨é±æ¸','å¹«æå¸é','æå¡ç³»çµ±','æ¸æåæåè¡¨æ¿','èªçç¥¨å¸','åæé¸å®','éæ²æ¨¡çµ','è¨æ¯ä¸­å¿'];
+// ────────────────────────────────────────────
+// BLOCK B — state
+// ────────────────────────────────────────────
+const MODS = ['SaaS訂閱數','幫手市集','會員系統','數據分析儀表板','自營票券','圖文選單','遊戲模組','訊息中心'];
 const METRICS = [
-  { key:'nb', label:'æéæ°å¢åç', color:'#52c41a', bg:'rgba(82,196,26,0.2)',  cls:'on-nb', kpiCls:'kc-nb' },
-  { key:'ns', label:'æéæ°å¢éå¸', color:'#13c2c2', bg:'rgba(19,194,194,0.2)', cls:'on-ns', kpiCls:'kc-ns' },
-  { key:'cb', label:'æéééåç', color:'#faad14', bg:'rgba(250,173,20,0.2)', cls:'on-cb', kpiCls:'kc-cb' },
-  { key:'cs', label:'æééééå¸', color:'#ff4d4f', bg:'rgba(255,77,79,0.2)',  cls:'on-cs', kpiCls:'kc-cs' },
+  { key:'nb', label:'期間新增品牌', color:'#52c41a', bg:'rgba(82,196,26,0.2)',  cls:'on-nb', kpiCls:'kc-nb' },
+  { key:'ns', label:'期間新增門市', color:'#13c2c2', bg:'rgba(19,194,194,0.2)', cls:'on-ns', kpiCls:'kc-ns' },
+  { key:'cb', label:'期間關閉品牌', color:'#faad14', bg:'rgba(250,173,20,0.2)', cls:'on-cb', kpiCls:'kc-cb' },
+  { key:'cs', label:'期間關閉門市', color:'#ff4d4f', bg:'rgba(255,77,79,0.2)',  cls:'on-cs', kpiCls:'kc-cs' },
 ];
 const DATA = {
-  A: { 'SaaSè¨é±æ¸':{nb:5,ns:10,cb:8,cs:20}, 'å¹«æå¸é':{nb:3,ns:8,cb:2,cs:5}, 'æå¡ç³»çµ±':{nb:5,ns:10,cb:8,cs:20}, 'æ¸æåæåè¡¨æ¿':{nb:0,ns:0,cb:0,cs:0}, 'èªçç¥¨å¸':{nb:1,ns:2,cb:1,cs:2}, 'åæé¸å®':{nb:0,ns:0,cb:5,cs:7}, 'éæ²æ¨¡çµ':{nb:0,ns:0,cb:1,cs:1}, 'è¨æ¯ä¸­å¿':{nb:0,ns:0,cb:0,cs:0} },
-  B: { 'SaaSè¨é±æ¸':{nb:14,ns:28,cb:61,cs:71}, 'å¹«æå¸é':{nb:9,ns:21,cb:5,cs:12}, 'æå¡ç³»çµ±':{nb:14,ns:28,cb:61,cs:71}, 'æ¸æåæåè¡¨æ¿':{nb:0,ns:0,cb:1,cs:1}, 'èªçç¥¨å¸':{nb:0,ns:0,cb:4,cs:5}, 'åæé¸å®':{nb:2,ns:2,cb:2,cs:3}, 'éæ²æ¨¡çµ':{nb:2,ns:2,cb:3,cs:3}, 'è¨æ¯ä¸­å¿':{nb:0,ns:0,cb:1,cs:1} }
+  A: { 'SaaS訂閱數':{nb:5,ns:10,cb:8,cs:20}, '幫手市集':{nb:3,ns:8,cb:2,cs:5}, '會員系統':{nb:5,ns:10,cb:8,cs:20}, '數據分析儀表板':{nb:0,ns:0,cb:0,cs:0}, '自營票券':{nb:1,ns:2,cb:1,cs:2}, '圖文選單':{nb:0,ns:0,cb:5,cs:7}, '遊戲模組':{nb:0,ns:0,cb:1,cs:1}, '訊息中心':{nb:0,ns:0,cb:0,cs:0} },
+  B: { 'SaaS訂閱數':{nb:14,ns:28,cb:61,cs:71}, '幫手市集':{nb:9,ns:21,cb:5,cs:12}, '會員系統':{nb:14,ns:28,cb:61,cs:71}, '數據分析儀表板':{nb:0,ns:0,cb:1,cs:1}, '自營票券':{nb:0,ns:0,cb:4,cs:5}, '圖文選單':{nb:2,ns:2,cb:2,cs:3}, '遊戲模組':{nb:2,ns:2,cb:3,cs:3}, '訊息中心':{nb:0,ns:0,cb:1,cs:1} }
 };
 
 let activeMetric = 0;
@@ -625,14 +625,14 @@ let cmpStart = new Date('2025-01-01');
 let cmpEnd   = new Date('2025-02-28');
 let cmpMode  = 'prev';
 
-// Calendar state â main period
+// Calendar state — main period
 let mainCalYear = 2026, mainCalMonth = 0; // Jan 2026
-// Calendar state â comparison period
+// Calendar state — comparison period
 let calYear = 2025, calMonth = 0; // Jan 2025
 
-// ââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────
 // Unified panel
-// ââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────
 function openUnifiedPanel() {
   // sync inputs with current state
   document.getElementById('main-start-in').value = fmt(mainStart);
@@ -700,8 +700,8 @@ function applyUnified() {
   mainEnd   = new Date(document.getElementById('main-end-in').value);
   cmpStart  = new Date(document.getElementById('cmp-start').value);
   cmpEnd    = new Date(document.getElementById('cmp-end').value);
-  document.getElementById('main-bar-val').textContent = `${fmtShort(mainStart)} â ${fmtShort(mainEnd)}`;
-  document.getElementById('cmp-bar-val').textContent  = `${fmtShort(cmpStart)} â ${fmtShort(cmpEnd)}`;
+  document.getElementById('main-bar-val').textContent = `${fmtShort(mainStart)} – ${fmtShort(mainEnd)}`;
+  document.getElementById('cmp-bar-val').textContent  = `${fmtShort(cmpStart)} – ${fmtShort(cmpEnd)}`;
   closeUnifiedPanel();
   checkWarning();
   renderB();
@@ -713,10 +713,10 @@ function checkWarning() {
   document.getElementById('warning-bar').style.display = mainDays !== cmpDays ? 'flex' : 'none';
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────
 // Mini calendar
-// ââââââââââââââââââââââââââââââââââââââââââââ
-const DOW = ['æ¥','ä¸','äº','ä¸','å','äº','å­'];
+// ────────────────────────────────────────────
+const DOW = ['日','一','二','三','四','五','六'];
 function fmt(d) { return d.toISOString().slice(0,10); }
 function fmtShort(d) { return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`; }
 
@@ -734,14 +734,14 @@ function mainCalMove(d) {
 }
 
 function buildCalHtml(yr, mo, s, e, moveFn) {
-  const monthNames = ['1æ','2æ','3æ','4æ','5æ','6æ','7æ','8æ','9æ','10æ','11æ','12æ'];
+  const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
   const first = new Date(yr, mo, 1).getDay();
   const total = new Date(yr, mo+1, 0).getDate();
   let days = '';
   DOW.forEach(d => { days += `<div class="cal-dow">${d}</div>`; });
   for (let i = 0; i < first; i++) days += `<div class="cal-day empty"></div>`;
   for (let d = 1; d <= total; d++) {
-    const cur = new Date(yr, mo, d);
+    const cur = new Date(yr, mm, d);
     const t = cur.getTime(), st = s.getTime(), et = e.getTime();
     let cls = 'cal-day';
     if (t === st) cls += ' range-start';
@@ -750,9 +750,9 @@ function buildCalHtml(yr, mo, s, e, moveFn) {
     days += `<div class="${cls}">${d}</div>`;
   }
   return `<div class="mini-cal-header">
-    <button class="cal-nav" onclick="${moveFn}(-1)">â¹</button>
-    <span class="mini-cal-title">${yr}òºt${monthNames[mo]}</span>
-    <button class="cal-nav" onclick="${moveFn}(1)">âº</button>
+    <button class="cal-nav" onclick="${moveFn}(-1)">‹</button>
+    <span class="mini-cal-title">${yr}�t${monthNames[mo]}</span>
+    <button class="cal-nav" onclick="${moveFn}(1)">›</button>
   </div><div class="cal-grid">${days}</div>`;
 }
 
@@ -769,23 +769,23 @@ function calMove(d) {
   renderMiniCal();
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────
 // Block B render
-// ââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────
 function growthPct(a,b) { if(a===0&&b===0) return null; if(a===0) return null; return ((b-a)/a)*100; }
 function growthTag(a,b) {
   const g = growthPct(a,b);
-  if(g===null) return `<span class="growth-tag gt-flat">â</span>`;
+  if(g===null) return `<span class="growth-tag gt-flat">—</span>`;
   const cls = g>0?'gt-up':g<0?'gt-down':'gt-flat';
-  const arrow = g>0?'â':g<0?'â':'â';
+  const arrow = g>0?'↑':g<0?'↓':'—';
   return `<span class="growth-tag ${cls}">${arrow} ${Math.abs(g).toFixed(1)}%</span>`;
 }
 function growthBadge(a,b) {
   const g = growthPct(a,b);
-  if(g===null) return ['bg-flat','â'];
-  if(g>0) return ['bg-up',`â² +${b-a} (+${g.toFixed(1)}%)`];
-  if(g<0) return ['bg-down',`â¼ ${b-a} (${g.toFixed(1)}%)`];
-  return ['bg-flat','â 0'];
+  if(g===null) return ['bg-flat','—'];
+  if(g>0) return ['bg-up',`▲ +${b-a} (+${g.toFixed(1)}%)`];
+  if(g<0) return ['bg-down',`▼ ${b-a} (${g.toFixed(1)}%)`];
+  return ['bg-flat','— 0'];
 }
 function sumMetric(period,key) { return MODS.reduce((s,m)=>s+DATA[period][m][key],0); }
 
@@ -797,7 +797,7 @@ function renderBKPI() {
     return `<div class="kpi-card ${m.kpiCls}">
       <div class="kpi-label">${m.label}</div>
       <div class="kpi-nums">
-        <span class="kpi-a">${a}</span><span class="kpi-arr">â</span><span class="kpi-b">${b}</span>
+        <span class="kpi-a">${a}</span><span class="kpi-arr">→</span><span class="kpi-b">${b}</span>
         <span class="kpi-badge ${bc}">${bt}</span>
       </div>
     </div>`;
@@ -822,8 +822,8 @@ function setMetric(i) {
 function renderBChart() {
   if (bChart) { bChart.destroy(); bChart = null; }
   const m = METRICS[activeMetric];
-  const lA = `æé Aï¼${fmtShort(mainStart)} â ${fmtShort(mainEnd)}ï¼`;
-  const lB = `æé Bï¼${fmtShort(cmpStart)} â ${fmtShort(cmpEnd)}ï¼`;
+  const lA = `期間 A（${fmtShort(mainStart)} – ${fmtShort(mainEnd)}）`;
+  const lB = `期間 B（${fmtShort(cmpStart)} – ${fmtShort(cmpEnd)}）`;
   bChart = new Chart(document.getElementById('b-chart'), {
     type: 'bar',
     data: {
@@ -845,7 +845,7 @@ function renderBChart() {
               if (items.length < 2) return [];
               const a = items[0].raw, b = items[1].raw;
               const g = growthPct(a,b);
-              return g!==null ? [`æé·çï¼${g>0?'+':''}${g.toFixed(1)}%`] : [];
+              return g!==null ? [`成長率：${g>0?'+':''}${g.toFixed(1)}%`] : [];
             }
           }
         }
@@ -864,7 +864,7 @@ function renderBTable() {
     const isSaaS = idx === 0;
     const rowCls = isSaaS ? 'class="saas-row"' : '';
     const name = isSaaS
-      ? `<div class="tip-wrap" style="font-weight:700;">SaaSè¨é±æ¸<div class="tip-icon">i</div><div class="tip-box">ä»¥åçä¸»å¸³èçºè¨ç®å®ä½ï¼æä¸éå¸ä¸éè¤å ç¸½ï¼ååçåªè¨ä¸æ¬¡ã</div></div>`
+      ? `<div class="tip-wrap" style="font-weight:700;">SaaS訂閱數<div class="tip-icon">i</div><div class="tip-box">以品牌主帳號為計算單位，旗下門市不重複加總，同品牌只計一次。</div></div>`
       : mod;
     const cells = METRICS.map(m => {
       const cmp = DATA.A[mod][m.key], main = DATA.B[mod][m.key];
@@ -876,8 +876,8 @@ function renderBTable() {
 
 function renderB() { buildToggles(); renderBChart(); renderBTable(); }
 
-// ââ init ââââââââââââââââââââââââââââââââââ
-// Set initial comparison period (ä¸æ: day before mainStart, same span)
+// ── init ──────────────────────────────────
+// Set initial comparison period (上期: day before mainStart, same span)
 (function initCmp() {
   const mainDays = Math.round((mainEnd - mainStart) / 86400000);
   const e = new Date(mainStart.getTime() - 86400000);

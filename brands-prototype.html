@@ -284,6 +284,15 @@ tr:hover td { background: #fbfbff; }
 .cal-day.range-end   { border-radius: 0 6px 6px 0; }
 .cal-day.range-start.range-end { border-radius: 6px; }
 
+.cal-range-display { display:flex; align-items:center; gap:8px; margin-bottom:10px; font-size:13px; color:#333; background:#f7f8fb; border-radius:7px; padding:8px 12px; min-height:34px; }
+.cal-range-display .rng-start { font-weight:700; color:#1677ff; }
+.cal-range-display .rng-sep { color:#aaa; }
+.cal-range-display .rng-end { font-weight:700; color:#1677ff; }
+.cal-range-display .rng-hint { color:#aaa; font-style:italic; }
+.cal-day { cursor:pointer; }
+.cal-day.pending { background:#1677ff; color:#fff; border-radius:50%; }
+.cal-day.hover-range { background:#e6f0ff; }
+
 .cmp-panel-footer { padding: 12px 16px; border-top: 1px solid #f0f0f5; display: flex; justify-content: flex-end; gap: 8px; }
 .btn-ghost { padding: 6px 14px; border-radius: 7px; border: 1.5px solid #e0e0ea; background: #fff; font-size: 13px; color: #555; cursor: pointer; font-family: inherit; }
 .btn-ghost:hover { border-color: #999; }
@@ -441,13 +450,11 @@ tr:hover td { background: #fbfbff; }
                 <div class="uni-section-title">
                   <span class="uni-period-badge ubb">A</span>主要期間
                 </div>
-                <div class="uni-date-row">
-                  <span class="cmp-date-label">開始</span>
-                  <input type="date" class="cmp-date-in" id="main-start-in" value="2026-01-01" onchange="onMainDateChange()">
-                  <span class="cmp-date-arrow">→</span>
-                  <span class="cmp-date-label">結束</span>
-                  <input type="date" class="cmp-date-in" id="main-end-in" value="2026-02-28" onchange="onMainDateChange()">
+                <div class="cal-range-display" id="main-range-disp">
+                  <span class="rng-hint">點選開始日期</span>
                 </div>
+                <input type="hidden" id="main-start-in" value="2026-01-01">
+                <input type="hidden" id="main-end-in" value="2026-02-28">
                 <div class="mini-cal" id="main-cal"></div>
               </div>
 
@@ -463,13 +470,11 @@ tr:hover td { background: #fbfbff; }
                   <button class="uni-mode-btn" onclick="setCmpMode('yoy')">去年同期</button>
                   <button class="uni-mode-btn" onclick="setCmpMode('custom')">自訂</button>
                 </div>
-                <div class="uni-date-row" style="margin-top:12px;">
-                  <span class="cmp-date-label">開始</span>
-                  <input type="date" class="cmp-date-in" id="cmp-start" value="2025-01-01" onchange="onCmpDateChange()">
-                  <span class="cmp-date-arrow">→</span>
-                  <span class="cmp-date-label">結束</span>
-                  <input type="date" class="cmp-date-in" id="cmp-end" value="2025-02-28" onchange="onCmpDateChange()">
+                <div class="cal-range-display" id="cmp-range-disp">
+                  <span class="rng-hint">點選開始日期</span>
                 </div>
+                <input type="hidden" id="cmp-start" value="2025-01-01">
+                <input type="hidden" id="cmp-end" value="2025-02-28">
                 <div class="mini-cal" id="mini-cal"></div>
               </div>
             </div>
@@ -483,7 +488,7 @@ tr:hover td { background: #fbfbff; }
 
         <!-- Chart -->
         <div class="chart-card">
-          <div class="chart-title">各模組對比 — 點選指標切換圖表</div>
+          <div class="chart-title">各模組對比 — 黝選指標切換圖表</div>
           <div class="metric-toggles" id="metric-toggles"></div>
           <div class="chart-wrap"><canvas id="b-chart"></canvas></div>
         </div>
@@ -609,8 +614,6 @@ const METRICS = [
   { key:'cb', label:'期間關閉品牌', color:'#faad14', bg:'rgba(250,173,20,0.2)', cls:'on-cb', kpiCls:'kc-cb' },
   { key:'cs', label:'期間關閉門市', color:'#ff4d4f', bg:'rgba(255,77,79,0.2)',  cls:'on-cs', kpiCls:'kc-cs' },
 ];
-
-// Base activity rates per 60-day neutral period (2024 baseline)
 const B_RATES = {
   'SaaS訂閱數':     { nb:12, ns:26, cb:58, cs:68 },
   '幫手市集':       { nb:7,  ns:18, cb:4,  cs:10 },
@@ -634,14 +637,13 @@ function genPeriodData(startDate, endDate) {
 
   const result = {};
   MODS.forEach(mod => {
-    // Deterministic per-mod variation so numbers are stable but differ by module
     let h = 0;
     for (let i = 0; i < mod.length; i++) h = (h * 31 + mod.charCodeAt(i)) & 0xff;
     const modVar = 0.82 + ((h + y * 3 + mo) % 36) / 100; // 0.82–1.17
     const r = B_RATES[mod];
     result[mod] = {};
     ['nb','ns','cb','cs'].forEach(k => {
-      result[mod][k] = Math.max(0, Math.round(r[k] * scale * modVar));
+      result[mod][k] = Math.max(0, Math.round(r)k] * scale * modVar));
     });
   });
   return result;
@@ -664,9 +666,20 @@ let cmpEnd   = new Date('2025-02-28');
 let cmpMode  = 'prev';
 
 // Calendar state — main period
+let mainCalYear cmpStart = new Date('2025-01-01');
+let cmpEnd   = new Date('2025-02-28');
+let cmpMode  = 'prev';
+
+// Calendar state — main period
 let mainCalYear = 2026, mainCalMonth = 0; // Jan 2026
 // Calendar state — comparison period
 let calYear = 2025, calMonth = 0; // Jan 2025
+
+// Calendar click-selection state
+let mainCalPhase = 0; // 0=waiting start, 1=waiting end
+let mainCalPend = null; // pending start Date
+let cmpCalPhase = 0;
+let cmpCalPend = null;
 
 // ────────────────────────────────────────────
 // Unified panel
@@ -679,6 +692,12 @@ function openUnifiedPanel() {
   document.getElementById('cmp-end').value       = fmt(cmpEnd);
   mainCalYear = mainStart.getFullYear(); mainCalMonth = mainStart.getMonth();
   calYear     = cmpStart.getFullYear();  calMonth     = cmpStart.getMonth();
+  // Reset selection phases
+  mainCalPhase = 0; mainCalPend = null;
+  cmpCalPhase = 0; cmpCalPend = null;
+  // Update range displays
+  document.getElementById('main-range-disp').innerHTML = `<span class="rng-start">${fmtShort(mainStart)}</span><span class="rng-sep"> → </span><span class="rng-end">${fmtShort(mainEnd)}</span>`;
+  document.getElementById('cmp-range-disp').innerHTML  = `<span class="rng-start">${fmtShort(cmpStart)}</span><span class="rng-sep"> → </span><span class="rng-end">${fmtShort(cmpEnd)}</span>`;
   document.getElementById('uni-overlay').classList.add('open');
   renderMainCal();
   renderMiniCal();
@@ -719,6 +738,8 @@ function setCmpMode(mode) {
   document.getElementById('cmp-start').value = fmt(cmpStart);
   document.getElementById('cmp-end').value   = fmt(cmpEnd);
   calYear = cmpStart.getFullYear(); calMonth = cmpStart.getMonth();
+  const dispEl = document.getElementById('cmp-range-disp');
+  if (dispEl) dispEl.innerHTML = `<span class="rng-start">${fmtShort(cmpStart)}</span><span class="rng-sep"> → </span><span class="rng-end">${fmtShort(cmpEnd)}</span>`;
   renderMiniCal();
 }
 
@@ -763,9 +784,7 @@ function fmtShort(d) { return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate(
 
 function renderMainCal() {
   const cal = document.getElementById('main-cal');
-  const s = new Date(document.getElementById('main-start-in').value);
-  const e = new Date(document.getElementById('main-end-in').value);
-  cal.innerHTML = buildCalHtml(mainCalYear, mainCalMonth, s, e, 'mainCalMove');
+  cal.innerHTML = buildCalHtml(mainCalYear, mainCalMonth, mainCalPhase === 0 ? mainStart : null, mainCalPhase === 0 ? mainEnd : null, 'mainCalMove', 'mainCalDayClick', mainCalPhase === 1 ? mainCalPend : null);
 }
 function mainCalMove(d) {
   mainCalMonth += d;
@@ -773,8 +792,32 @@ function mainCalMove(d) {
   if (mainCalMonth < 0)  { mainCalMonth = 11; mainCalYear--; }
   renderMainCal();
 }
+function mainCalDayClick(ds) {
+  const d = new Date(ds);
+  if (mainCalPhase === 0) {
+    // First click: set start
+    mainCalPhase = 1;
+    mainCalPend = d;
+    const disp = document.getElementById('main-range-disp');
+    disp.innerHTML = `<span class="rng-start">${fmtShort(d)}</span><span class="rng-sep"> → </span><span class="rng-hint">選擇結束日期</span>`;
+    document.getElementById('main-start-in').value = fmt(d);
+    document.getElementById('main-end-in').value = fmt(d);
+  } else {
+    // Second click: set end
+    let s = mainCalPend, e = d;
+    if (e < s) { const tmp = s; s = e; e = tmp; }
+    mainStart = s; mainEnd = e;
+    mainCalPhase = 0; mainCalPend = null;
+    document.getElementById('main-start-in').value = fmt(s);
+    document.getElementById('main-end-in').value = fmt(e);
+    const disp = document.getElementById('main-range-disp');
+    disp.innerHTML = `<span class="rng-start">${fmtShort(s)}</span><span class="rng-sep"> → </span><span class="rng-end">${fmtShort(e)}</span>`;
+    if (cmpMode !== 'custom') setCmpMode(cmpMode);
+  }
+  renderMainCal();
+}
 
-function buildCalHtml(yr, mo, s, e, moveFn) {
+function buildCalHtml(yr, mo, s, e, moveFn, clickFn, pendStart) {
   const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
   const first = new Date(yr, mo, 1).getDay();
   const total = new Date(yr, mo+1, 0).getDate();
@@ -783,30 +826,59 @@ function buildCalHtml(yr, mo, s, e, moveFn) {
   for (let i = 0; i < first; i++) days += `<div class="cal-day empty"></div>`;
   for (let d = 1; d <= total; d++) {
     const cur = new Date(yr, mo, d);
-    const t = cur.getTime(), st = s.getTime(), et = e.getTime();
+    const t = cur.getTime();
+    const st = s ? s.getTime() : null;
+    const et = e ? e.getTime() : null;
     let cls = 'cal-day';
-    if (t === st) cls += ' range-start';
-    if (t === et) cls += ' range-end';
-    if (t > st && t < et) cls += ' in-range';
-    days += `<div class="${cls}">${d}</div>`;
+    if (pendStart) {
+      // Phase 1: only highlight pending start
+      if (t === pendStart.getTime()) cls += ' range-start pending';
+    } else if (st !== null && et !== null) {
+      if (t === st) cls += ' range-start';
+      if (t === et) cls += ' range-end';
+      if (t > st && t < et) cls += ' in-range';
+    }
+    const ds = `${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    days += `<div class="${cls}" onclick="${clickFn}('${ds}')">${d}</div>`;
   }
   return `<div class="mini-cal-header">
     <button class="cal-nav" onclick="${moveFn}(-1)">‹</button>
-    <span class="mini-cal-title">${yr}鹴${monthNames[mo]}</span>
+    <span class="mini-cal-title">${yr}&#24180;${monthNames[mo]}</span>
     <button class="cal-nav" onclick="${moveFn}(1)">›</button>
   </div><div class="cal-grid">${days}</div>`;
 }
 
 function renderMiniCal() {
   const cal = document.getElementById('mini-cal');
-  const s = new Date(document.getElementById('cmp-start').value);
-  const e = new Date(document.getElementById('cmp-end').value);
-  cal.innerHTML = buildCalHtml(calYear, calMonth, s, e, 'calMove');
+  cal.innerHTML = buildCalHtml(calYear, calMonth, cmpCalPhase === 0 ? cmpStart : null, cmpCalPhase === 0 ? cmpEnd : null, 'calMove', 'cmpCalDayClick', cmpCalPhase === 1 ? cmpCalPend : null);
 }
 function calMove(d) {
   calMonth += d;
   if (calMonth > 11) { calMonth = 0; calYear++; }
   if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderMiniCal();
+}
+function cmpCalDayClick(ds) {
+  const d = new Date(ds);
+  if (cmpCalPhase === 0) {
+    cmpCalPhase = 1;
+    cmpCalPend = d;
+    const disp = document.getElementById('cmp-range-disp');
+    disp.innerHTML = `<span class="rng-start">${fmtShort(d)}</span><span class="rng-sep"> → </span><span class="rng-hint">選擇結束日期</span>`;
+    document.getElementById('cmp-start').value = fmt(d);
+    document.getElementById('cmp-end').value = fmt(d);
+    cmpMode = 'custom';
+    document.querySelectorAll('.uni-mode-btn').forEach((b,i) => b.classList.toggle('active', i===2));
+  } else {
+    let s = cmpCalPend, e = d;
+    if (e < s) { const tmp = s; s = e; e = tmp; }
+    cmpStart = s; cmpEnd = e;
+    cmpCalPhase = 0; cmpCalPend = null;
+    document.getElementById('cmp-start').value = fmt(s);
+    document.getElementById('cmp-end').value = fmt(e);
+    const disp = document.getElementById('cmp-range-disp');
+    disp.innerHTML = `<span class="rng-start">${fmtShort(s)}</span><span class="rng-sep"> → </span><span class="rng-end">${fmtShort(e)}</span>`;
+  }
   renderMiniCal();
 }
 

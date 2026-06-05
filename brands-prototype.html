@@ -643,7 +643,7 @@ function genPeriodData(startDate, endDate) {
     const r = B_RATES[mod];
     result[mod] = {};
     ['nb','ns','cb','cs'].forEach(k => {
-      result[mod][k] = Math.max(0, Math.round(r)k] * scale * modVar));
+      result[mod][k] = Math.max(0, Math.round(r[k] * scale * modVar));
     });
   });
   return result;

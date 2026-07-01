@@ -126,6 +126,16 @@ tr:hover td { background: #fbfbff; }
 .cmp-toggle-text { font-size: 13px; color: #666; font-weight: 500; }
 .cmp-toggle-label input:checked ~ .cmp-toggle-text { color: #1677ff; font-weight: 600; }
 
+/* ── Segmented Control ── */
+.seg-ctrl { display: inline-flex; background: #f0f0f5; border-radius: 8px; padding: 3px; gap: 2px; margin-bottom: 24px; }
+.seg-btn { padding: 6px 20px; border-radius: 6px; font-size: 13px; font-weight: 500; color: #777; border: none; background: transparent; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.seg-btn.active { background: #fff; color: #1677ff; font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
+
+/* ── Apply button ── */
+.btn-apply { padding: 5px 14px; border-radius: 7px; font-size: 13px; font-weight: 600; color: #fff; background: #1677ff; border: none; cursor: pointer; transition: background 0.15s; }
+.btn-apply:hover { background: #0e68e0; }
+.btn-apply.pending { background: #ff7a00; }
+
 /* ── Block A deltas ── */
 .val-b { font-size: 14px; font-weight: 600; color: #111; }
 .delta { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-left: 4px; }
@@ -363,10 +373,16 @@ tr:hover td { background: #fbfbff; }
         <div class="tab">請款報表</div>
       </div>
 
+      <!-- ── Segmented Control ── -->
+      <div class="seg-ctrl">
+        <button class="seg-btn active" onclick="switchBlock('a', this)">各模組訂閱數</button>
+        <button class="seg-btn" onclick="switchBlock('b', this)">各模組異動對比</button>
+      </div>
+
       <!-- ══════════════════════
            BLOCK A
       ══════════════════════ -->
-      <div class="section">
+      <div id="block-a-wrap" class="section">
         <div class="section-eyebrow">各模組訂閱數</div>
 
         <!-- Title row + controls -->
@@ -374,7 +390,8 @@ tr:hover td { background: #fbfbff; }
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <span class="section-title">品牌數 / 門市數</span>
             <div style="display:flex;align-items:center;gap:8px;">
-              <input type="month" class="date-in" id="a-month" value="2026-04" onchange="updateACutoff()">
+              <input type="month" class="date-in" id="a-month" value="2026-04" onchange="onMonthChange()">
+              <button class="btn-apply" id="a-apply-btn" onclick="applyMonth()">套用</button>
               <span style="font-size:12px;color:#bbb;">資料截止：<span id="a-cutoff">2026/04/30</span></span>
             </div>
           </div>
@@ -407,7 +424,7 @@ tr:hover td { background: #fbfbff; }
       <!-- ══════════════════════
            BLOCK B
       ══════════════════════ -->
-      <div class="section">
+      <div id="block-b-wrap" class="section" style="display:none;">
         <div class="section-eyebrow">各模組訂閱異動對比</div>
         <div style="margin-bottom:14px;">
           <span class="section-title">期間新增 / 關閉品牌・門市</span>
@@ -488,7 +505,7 @@ tr:hover td { background: #fbfbff; }
 
         <!-- Chart -->
         <div class="chart-card">
-          <div class="chart-title">各模組對比 — 黝選指標切換圖表</div>
+          <div class="chart-title">各模組對比 — 點選指標切換圖表</div>
           <div class="metric-toggles" id="metric-toggles"></div>
           <div class="chart-wrap"><canvas id="b-chart"></canvas></div>
         </div>
@@ -597,11 +614,23 @@ function renderA(ym) {
 }
 
 function lastDay(ym) { const [y,m] = ym.split('-').map(Number); return new Date(y,m,0).getDate(); }
-function updateACutoff() {
+function onMonthChange() {
   const v = document.getElementById('a-month').value;
   const [y,m] = v.split('-');
   document.getElementById('a-cutoff').textContent = `${y}/${m}/${String(lastDay(v)).padStart(2,'0')}`;
+  const btn = document.getElementById('a-apply-btn');
+  btn.classList.add('pending');
+}
+function applyMonth() {
+  const v = document.getElementById('a-month').value;
   renderA(v);
+  document.getElementById('a-apply-btn').classList.remove('pending');
+}
+function switchBlock(block, el) {
+  document.getElementById('block-a-wrap').style.display = block === 'a' ? '' : 'none';
+  document.getElementById('block-b-wrap').style.display = block === 'b' ? '' : 'none';
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
 }
 
 // ────────────────────────────────────────────
@@ -614,6 +643,8 @@ const METRICS = [
   { key:'cb', label:'期間關閉品牌', color:'#faad14', bg:'rgba(250,173,20,0.2)', cls:'on-cb', kpiCls:'kc-cb' },
   { key:'cs', label:'期間關閉門市', color:'#ff4d4f', bg:'rgba(255,77,79,0.2)',  cls:'on-cs', kpiCls:'kc-cs' },
 ];
+
+// Base activity rates per 60-day neutral period (2024 baseline)
 const B_RATES = {
   'SaaS訂閱數':     { nb:12, ns:26, cb:58, cs:68 },
   '幫手市集':       { nb:7,  ns:18, cb:4,  cs:10 },
@@ -637,6 +668,7 @@ function genPeriodData(startDate, endDate) {
 
   const result = {};
   MODS.forEach(mod => {
+    // Deterministic per-mod variation so numbers are stable but differ by module
     let h = 0;
     for (let i = 0; i < mod.length; i++) h = (h * 31 + mod.charCodeAt(i)) & 0xff;
     const modVar = 0.82 + ((h + y * 3 + mo) % 36) / 100; // 0.82–1.17
@@ -885,7 +917,8 @@ function growthTag(a,b) {
   const g = growthPct(a,b);
   if(g===null) return `<span class="growth-tag gt-flat">—</span>`;
   const cls = g>0?'gt-up':g<0?'gt-down':'gt-flat';
-  const arrow = g>0?'↑':g<0?'↓':'—';
+  if(g===0) return `<span class="growth-tag gt-flat">0.0%</span>`;
+  const arrow = g>0?'↑':'↓';
   return `<span class="growth-tag ${cls}">${arrow} ${Math.abs(g).toFixed(1)}%</span>`;
 }
 function growthBadge(a,b) {
@@ -893,7 +926,7 @@ function growthBadge(a,b) {
   if(g===null) return ['bg-flat','—'];
   if(g>0) return ['bg-up',`▲ +${b-a} (+${g.toFixed(1)}%)`];
   if(g<0) return ['bg-down',`▼ ${b-a} (${g.toFixed(1)}%)`];
-  return ['bg-flat','— 0'];
+  return ['bg-flat',`0 (0.0%)`];
 }
 function sumMetric(period,key) { return MODS.reduce((s,m)=>s+DATA[period][m][key],0); }
 
